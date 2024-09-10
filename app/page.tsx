@@ -9,67 +9,67 @@ import CustomCard from "@/components/ui/CustomCard";
 export default function Home() {
   const [review] = useState([
     [
-        "So close yet so far from greatness.",
-        "Post-purchase platform for Creators",
-        "62"
+      "So close yet so far from greatness.",
+      "Post-purchase platform for Creators",
+      "62"
     ],
     [
-        "Zero points for effort.",
-        "Directory of SaaS boilerplates",
-        "44"
+      "Zero points for effort.",
+      "Directory of SaaS boilerplates",
+      "44"
     ],
     [
-        "Not good, not terrible.",
-        "Unlimited design agency",
-        "65"
+      "Not good, not terrible.",
+      "Unlimited design agency",
+      "65"
     ],
     [
-        "Could be worse, but not by much.",
-        "Movie recommendation platform",
-        "53"
+      "Could be worse, but not by much.",
+      "Movie recommendation platform",
+      "53"
     ],
     [
-        "Not even close, buddy.",
-        "Mood tracker for pets",
-        "32"
+      "Not even close, buddy.",
+      "Mood tracker for pets",
+      "32"
     ],
     [
-        "Are you allergic to good ideas?",
-        "AI-generated music playlists",
-        "48"
+      "Are you allergic to good ideas?",
+      "AI-generated music playlists",
+      "48"
     ],
     [
-        "A lukewarm attempt at creativity.",
-        "Minimalistic to-do app",
-        "50"
+      "A lukewarm attempt at creativity.",
+      "Minimalistic to-do app",
+      "50"
     ],
     [
-        "Respect yourself, please.",
-        "Screenshot tool for Twitter",
-        "43"
+      "Respect yourself, please.",
+      "Screenshot tool for Twitter",
+      "43"
     ],
     [
-        "Top stuff, keep it coming.",
-        "AI-powered keyword research",
-        "82"
+      "Top stuff, keep it coming.",
+      "AI-powered keyword research",
+      "82"
     ],
     [
-        "Rocking it with that idea.",
-        "Marketing Strategy Generator",
-        "91"
+      "Rocking it with that idea.",
+      "Marketing Strategy Generator",
+      "91"
     ]
-]);
+  ]);
 
   useEffect(() => {
     const sliderList = document.querySelectorAll<HTMLElement>("#slider li")
     if (sliderList) {
-      const lineHeight = sliderList[0].offsetHeight + 20;
+      const lineHeight = sliderList[0].offsetHeight + 30;
       const slider = document.querySelector<HTMLElement>("#slider");
       if (slider) {
         slider.style.height = lineHeight * sliderList.length + "px";
         const sliderRect = slider.getBoundingClientRect();
         const totalHeight = sliderRect.height;
-        const time = (totalHeight) / 50; // 500px / sec
+        const time = (totalHeight) / 100; // 500px / sec
         slider.style.animationDuration = time + "s";
       }
     }
@@ -92,10 +92,9 @@ export default function Home() {
             <Input className="text-md p-5" type="text" id="audience" placeholder="Young parents" />
           </div>
           <div className="w-full mt-7">
-            <Button className="bg-[#FF612D] py-7 w-full">
-              <a href="./idea-valid" className="text-white text-xl font-black">
-                Validate my idea for FREE → </a>
-            </Button>
+            <a href="./idea-valid">
+              <Button className="bg-[#FF612D] py-7 w-full text-white text-xl font-black">Validate my idea for FREE →</Button>
+            </a>
             <p className="mt-2">22,323 business ideas validated already</p>
           </div>
         </div>
@@ -104,7 +103,7 @@ export default function Home() {
         <ul id='slider' className={styles.slider}>
           {review.map((reviewData, index) => (
             <li key={index}>
-              <CustomCard review={reviewData[0]} prod={reviewData[1]} num={parseInt(reviewData[2])}/>
+              <CustomCard review={reviewData[0]} prod={reviewData[1]} num={parseInt(reviewData[2])} />
             </li>
           ))}
         </ul>
