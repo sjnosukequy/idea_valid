@@ -5,8 +5,10 @@ import { Button } from "@/components/ui/button"
 import { useState, useEffect } from "react";
 import styles from './styles.module.css'
 import CustomCard from "@/components/ui/CustomCard";
+import { useRouter } from 'next/navigation'
 
 export default function Home() {
+  const router = useRouter()
   const [review] = useState([
     [
       "So close yet so far from greatness.",
@@ -60,6 +62,9 @@ export default function Home() {
     ]
   ]);
 
+  const [idea, setIdea] = useState('');
+  const [audience, setAudience] = useState('');
+
   useEffect(() => {
     const sliderList = document.querySelectorAll<HTMLElement>("#slider li")
     if (sliderList) {
@@ -75,6 +80,15 @@ export default function Home() {
     }
   }, []);
 
+  function handleIdeaSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    sessionStorage.setItem("idea", idea);
+    sessionStorage.setItem("audience", audience);
+    const array = new Uint32Array(1);
+    self.crypto.getRandomValues(array);
+    router.push(`/idea-valid/${array[0]}`)
+  }
+
   return (
     <div className="flex flex-col md:flex-row w-[100vw] h-[100vh]">
       <div className="flex flex-col flex-wrap justify-center content-center w-full md:w-[50%] lg:w-[60%] p-5 gap-5">
@@ -83,20 +97,24 @@ export default function Home() {
           IDEA VALIDATOR</h1>
         <p className="text-2xl">Get honest feedback about your business idea. Build something people want.</p>
         <div className="flex flex-col gap-7 w-full lg:w-[70%] mt-3">
-          <div className="grid w-full items-center gap-1.5">
-            <Label className="text-md font-bold" htmlFor="idea">Your business idea*</Label>
-            <Input className="text-md p-5" type="text" id="idea" placeholder="AI-powered fitness plan generator" />
-          </div>
-          <div className="grid w-full items-center gap-1.5">
-            <Label className="text-md font-bold" htmlFor="audience">Your audience*</Label>
-            <Input className="text-md p-5" type="text" id="audience" placeholder="Young parents" />
-          </div>
-          <div className="w-full mt-7">
-            <a href="./idea-valid">
-              <Button className="bg-[#FF612D] py-7 w-full text-white text-xl font-black">Validate my idea for FREE →</Button>
-            </a>
-            <p className="mt-2">22,323 business ideas validated already</p>
-          </div>
+          <form onSubmit={handleIdeaSubmit}>
+            <div className="grid w-full items-center gap-1.5">
+              <Label className="text-md font-bold" htmlFor="idea">Your business idea*</Label>
+              <Input value={idea} onChange={(e) => setIdea(e.target.value)} className="text-md p-5" type="text" id="idea" name="idea" placeholder="AI-powered fitness plan generator" />
+            </div>
+            <div className="grid w-full items-center gap-1.5">
+              <Label className="text-md font-bold" htmlFor="audience">Your audience*</Label>
+              <Input value={audience} onChange={(e) => setAudience(e.target.value)} className="text-md p-5" type="text" id="audience" name="audience" placeholder="Young parents" />
+            </div>
+
+            <div className="w-full mt-7">
+              <Button type="submit" className=" bg-[#FF612D] py-7 w-full text-white text-xl font-black">
+                Validate my idea for FREE →  </Button>
+              <p className="mt-2">22,323 business ideas validated already</p>
+            </div>
+
+          </form>
+
         </div>
       </div>
       <div className="relative w-full md:w-[50%] lg:w-[40%] h-full bg-[#ffc0ab] overflow-hidden box-border hidden md:block">
