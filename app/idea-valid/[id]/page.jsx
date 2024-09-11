@@ -41,7 +41,7 @@ export default function Page() {
         async function fetchPosts() {
             const idea = sessionStorage.getItem("idea")
             const audience = sessionStorage.getItem("audience")
-            if(idea == '' || audience == ''){
+            if(idea == '' || audience == '' || idea == null || audience == null){
                 setLoaded(true)
                 return
             }
