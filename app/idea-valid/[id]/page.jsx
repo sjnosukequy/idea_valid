@@ -4,7 +4,7 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import { AlertTriangle, AlertOctagon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { uniqueNamesGenerator, names } from 'unique-names-generator';
+// import { uniqueNamesGenerator, names } from 'unique-names-generator';
 
 
 export default function Page() {
@@ -28,11 +28,10 @@ export default function Page() {
         return data.json()
     }
 
-    const config = {
-        dictionaries: [names]
-    }
-    const characterName = uniqueNamesGenerator(config)
-    const [name] = useState(characterName)
+    // const config = {
+    //     dictionaries: [names]
+    // }
+    // const characterName = uniqueNamesGenerator(config)
 
 
     useEffect(() => {
