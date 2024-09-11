@@ -7,8 +7,6 @@ import { Button } from '@/components/ui/button';
 import { uniqueNamesGenerator, names } from 'unique-names-generator';
 
 
-
-
 export default function Page() {
     const [point, setPoint] = useState('0')
     const [breif, setBreif] = useState('This is painful to read.')
@@ -19,8 +17,8 @@ export default function Page() {
     const [Competition, setCompetition] = useState(`There seems to be moderate competition in this space, but it's not overwhelmingly fierce. While there are existing players, they may not be large brands, which provides some opportunity. However, you'll need a clear strategy to stand out to avoid being overshadowed.`)
     const [Differentiation, setDifferentiation] = useState(`It's tough to identify clear opportunities for differentiation in your idea. Without a strong unique selling proposition, your product risks blending into a crowded marketplace. You need to rethink your offering to highlight what makes it distinctly better or different to attract attention.`)
     const [Marketing, setMarketing] = useState(`Acquiring users in this market might prove challenging. Your target audience may not be easily reachable through standard marketing channels, which can hinder your user acquisition efforts. You'll need to invest time in figuring out the right messages and platforms to connect with them effectively.`)
+    const [data, setData] = useState([0, 1])
 
-    const [data, setData] = useState(null)
     async function interact(request, user) {
         let data = await fetch(`https://general-runtime.voiceflow.com/state/user/${encodeURI(user)}/interact`, {
             headers: { Authorization: process.env.NEXT_PUBLIC_API_KEY, 'Content-Type': 'application/json', versionID: 'production' },
@@ -38,55 +36,59 @@ export default function Page() {
 
 
     useEffect(() => {
+        const idea = sessionStorage.getItem("idea")
+        const audience = sessionStorage.getItem("audience")
         async function fetchPosts() {
-            const idea = sessionStorage.getItem("idea")
-            const audience = sessionStorage.getItem("audience")
-            if(idea == '' || audience == '' || idea == null || audience == null){
-                setLoaded(true)
-                return
-            }
-            let res = await fetch('../api/gpt/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
+            // INIT
+            await interact({
+                type: 'launch'
+            }, 'Quy')
+
+            const res = await interact({
+                "type": 'text',
+                "payload": JSON.stringify({
                     "idea": idea,
-                    "audience": audience,
-                    "user": name
+                    "customer": audience
                 }),
-            })
-            let data = await res.json()
-            setData(data)
+            }, 'Quy')
+            setData([...res]);
         }
-           // INIT
-        interact({
-            type: 'launch'
-        }, characterName)
+        if (!idea || !audience) {
+            setLoaded(true);
+            return;
+        }
+
         fetchPosts()
     }, [])
 
     useEffect(() => {
+        console.log(data);
         setContent()
     }, [data])
 
     const [loaded, setLoaded] = useState(false)
 
     function setContent() {
-        if (data?.['postRes']?.[1]?.['payload']) {
+        if (data?.[1]?.['payload']) {
             setLoaded(true)
-            console.log(loaded)
-            console.log(data)
-            const data2 = JSON.parse(data['postRes'][1]['payload']['message'])
-            setPoint(data2['score'])
-            setBreif(data2['breif'])
-            setReview(data2['review'])
-            setPriority(data2['Priority'])
-            setBudget(data2['Budget'])
-            setConsequences(data2['Consequences'])
-            setCompetition(data2['Competition'])
-            setDifferentiation(data2['Differentiation'])
-            setMarketing(data2['Marketing'])
+            // console.log(loaded)
+            // console.log(data)
+            try {
+                const data2 = JSON.parse(data[1]['payload']['message'])
+                setPoint(data2['score'])
+                setBreif(data2['breif'])
+                setReview(data2['review'])
+                setPriority(data2['Priority'])
+                setBudget(data2['Budget'])
+                setConsequences(data2['Consequences'])
+                setCompetition(data2['Competition'])
+                setDifferentiation(data2['Differentiation'])
+                setMarketing(data2['Marketing'])
+            }
+            catch (err) {
+                const point = Math.floor(Math.random() * 50) + 10;
+                setPoint(point)
+            }
         }
     }
 

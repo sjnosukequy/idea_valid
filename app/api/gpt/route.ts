@@ -12,7 +12,7 @@ async function interact(request: object, user: string) {
   const data = await fetch(`https://general-runtime.voiceflow.com/state/user/${encodeURI(user)}/interact`, {
     headers,
     method: "POST",
-    body: JSON.stringify({ request })
+    body: JSON.stringify({ request }),
   })
   return data.json()
 }
