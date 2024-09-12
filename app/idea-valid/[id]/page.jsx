@@ -8,7 +8,7 @@ import { Card, CardHeader, CardContent } from '@/components/ui/card';
 
 
 export default function Page({params}) {
-    // console.log(params.id)
+    console.log(params.id)
     const [point, setPoint] = useState('0')
     const [brief, setBrief] = useState('This is painful to read.')
     const [review, setReview] = useState(`Your business idea faces several limitations, particularly in terms of audience priorities and engagement with the problem you are addressing. The lack of urgency, combined with potential low willingness to pay, presents challenges in convincing users to invest in your product. Moreover, your competition is present and manageable, yet without a clear differentiation strategy, you may struggle to carve out a unique space in the market.`)
