@@ -5,6 +5,10 @@ import path from 'path';
 
 const localpath = path.join('tmp', 'DB.db');
 const dbPath = path.join('/tmp', 'DB.db');
+if(!fs.existsSync('/tmp')) {
+    fs.mkdirSync('/tmp');
+}
+
 const exists = fs.existsSync(dbPath);
 if (!exists) {
     fs.copyFile(localpath, dbPath, fs.constants.COPYFILE_EXCL, (err) => {
