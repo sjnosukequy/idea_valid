@@ -1,8 +1,16 @@
 import { NextResponse } from 'next/server'
-import {db} from '../../../database/sql'
+import { db } from '../../../database/sql'
 
 export async function GET(request: Request) {
-    // const dbPath = path.join('/tmp', 'database.db');
+    // const dbPath = path.join('tmp', 'DB.db');
+    // const newpath = path.join('tmp', 'DB2.db');
+    // fs.copyFile(dbPath, newpath, fs.constants.COPYFILE_EXCL, (err) => {
+    //     if (err) {
+    //         console.error(err);
+    //         return;
+    //     }
+    //     console.log('copied file from ' + dbPath + ' to ' + newpath);
+    // });
     // const res = await db.get('SELECT * FROM Post')
     return NextResponse.json({ Nice: request }, { status: 200 })
 }
