@@ -101,10 +101,12 @@ export default function Page({ params }) {
         const loadData = getData()
         loadData.then((data) => {
             if (!data['Data']['id']) {
-                if (!idea || !audience) {
-                    setLoaded(true)
-                    return
-                }
+                setLoaded(true)
+                return
+                // if (!idea || !audience) {
+                //     setLoaded(true)
+                //     return
+                // }
             }
             if (!data['Data']['point'] && !data['Data']['brief'] && !data['Data']['review'] && !data['Data']['priority_status'] && !data['Data']['budget_status'] && !data['Data']['consequence_status'] && !data['Data']['competition_status'] && !data['Data']['differ_status'] && !data['Data']['marketing_status']) {
                 // console.log('empty')
