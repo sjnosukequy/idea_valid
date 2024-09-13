@@ -29,7 +29,7 @@ export async function POST(request: Request) {
         marketing_status
     } = await request.json();
 
-    let result = {
+    const result = {
         "stmt": {},
         "lastID": 0,
         "changes": 0

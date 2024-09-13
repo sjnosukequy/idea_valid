@@ -71,7 +71,7 @@ export async function POST(request: Request) {
             temperature: 0.3,
             response_format: { "type": "json_object" }
         });
-        let response = {
+        const response = {
             "Data": data.choices[0].message.content,
             "Type": "text"
         };
@@ -82,7 +82,7 @@ export async function POST(request: Request) {
         return NextResponse.json({ response: response }, { status: 200 });
     }
     catch (error) {
-        let response = {
+        const response = {
             "Data": "An error occured",
             "Type": "text"
         };

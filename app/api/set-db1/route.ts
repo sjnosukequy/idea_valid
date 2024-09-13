@@ -16,7 +16,7 @@ export async function POST(request: Request) {
     filename: 'database/DB.db',
     driver: sqlite3.Database
   })
-  let result = {
+  const result = {
     "stmt": {},
     "lastID": 0,
     "changes": 0

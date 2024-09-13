@@ -29,7 +29,7 @@ export default function Page({ params }) {
         const audience = sessionStorage.getItem("audience")
         async function gpt() {
             count += 1
-            console.log('called api')
+            // console.log('called api')
             try {
                 const data = await fetch("/api/gpt", {
                     method: "POST",
@@ -43,8 +43,8 @@ export default function Page({ params }) {
                 });
                 const response_ai = await data.json()
                 const obj = response_ai['response']
-                console.log('in')
-                console.log(obj)
+                // console.log('in')
+                // console.log(obj)
                 let data2 = obj['Data']
                 if (obj['Type'] != 'json')
                     data2 = JSON.parse(data2)
@@ -78,7 +78,7 @@ export default function Page({ params }) {
                     setData(data2)
             }
             catch (err) {
-                console.log(err)
+                // console.log(err)
                 setLoaded(true)
             }
         }
@@ -130,7 +130,7 @@ export default function Page({ params }) {
     }, [])
 
     useEffect(() => {
-        console.log(data);
+        // console.log(data);
         setContent()
     }, [data])
 
