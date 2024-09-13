@@ -1,8 +1,5 @@
 import { NextResponse } from 'next/server'
-import sqlite3 from 'sqlite3'
-import { open } from 'sqlite'
-import path from 'path';
-// import fs from 'fs';
+import { db } from '../../../database/sql'
 
 export async function GET(request: Request) {
     return NextResponse.json({ Nice: request }, { status: 200 })
@@ -10,7 +7,6 @@ export async function GET(request: Request) {
 
 
 export async function POST(request: Request) {
-    const dbPath = path.join('/tmp', 'database.db');
     const {
         id,
         idea,
@@ -58,11 +54,6 @@ export async function POST(request: Request) {
         marketing &&
         marketing_status
     ) {
-        const db = await open({
-            filename: dbPath,
-            driver: sqlite3.Database
-        })
-
         const addQuerry = await db.run(
             'UPDATE Post set ' +
             'idea = :idea, ' +

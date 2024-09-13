@@ -7,11 +7,13 @@ import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
 import { useToast } from "@/hooks/use-toast"
 import { ToastAction } from "@/components/ui/toast"
+import { useRouter } from 'next/navigation'
 
 
 
 export default function Page({ params }) {
     // console.log(params.id)
+    const router = useRouter()
     const [point, setPoint] = useState('0')
     const [brief, setBrief] = useState('This is painful to read.')
     const [review, setReview] = useState(`Your business idea faces several limitations, particularly in terms of audience priorities and engagement with the problem you are addressing. The lack of urgency, combined with potential low willingness to pay, presents challenges in convincing users to invest in your product. Moreover, your competition is present and manageable, yet without a clear differentiation strategy, you may struggle to carve out a unique space in the market.`)
@@ -101,7 +103,8 @@ export default function Page({ params }) {
         const loadData = getData()
         loadData.then((data) => {
             if (!data['Data']['id']) {
-                setLoaded(true)
+                // setLoaded(true)
+                router.push('/')
                 return
                 // if (!idea || !audience) {
                 //     setLoaded(true)
