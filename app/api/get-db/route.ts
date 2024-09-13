@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import sqlite3 from 'sqlite3'
 import { open } from 'sqlite'
 import path from 'path';
-import fs from 'fs';
+// import fs from 'fs';
 
 export async function GET(request: Request) {
     return NextResponse.json({ Nice: request }, { status: 200 })
@@ -11,7 +11,7 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
     const dbPath = path.join('/tmp', 'database.db');
-    const exists = fs.existsSync(dbPath);
+    // const exists = fs.existsSync(dbPath);
     const formData = await request.json()
     const id = formData['id']
     const db = await open({
