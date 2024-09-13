@@ -11,7 +11,6 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
     const dbPath = path.join('/tmp', 'database.db');
-    // const exists = fs.existsSync(dbPath);
     const {
         id,
         idea,
@@ -63,32 +62,6 @@ export async function POST(request: Request) {
             filename: dbPath,
             driver: sqlite3.Database
         })
-
-        // if (!exists) {
-        //     await db.exec(`
-        //         CREATE TABLE IF NOT EXISTS Post (
-        //         id TEXT NOT NULL,
-        //         idea TEXT,
-        //         audience TEXT,
-        //         point TEXT,
-        //         brief TEXT,
-        //         review TEXT,
-        //         priority TEXT,
-        //         priority_status TEXT,
-        //         budget TEXT,
-        //         budget_status TEXT,
-        //         consequence TEXT,
-        //         consequence_status TEXT,
-        //         competition TEXT,
-        //         competition_status TEXT,
-        //         differ TEXT,
-        //         differ_status TEXT,
-        //         marketing TEXT,
-        //         marketing_status TEXT,
-        //         CONSTRAINT Post_PK PRIMARY KEY (id)
-        //     );
-        //     `);
-        // }
 
         const addQuerry = await db.run(
             'UPDATE Post set ' +
