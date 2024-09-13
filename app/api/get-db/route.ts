@@ -21,31 +21,31 @@ export async function POST(request: Request) {
 
     console.log(exists)
 
-    // if (!exists) {
-    //     await db.exec(`
-    //         CREATE TABLE IF NOT EXISTS Post (
-    //         id TEXT NOT NULL,
-    //         idea TEXT,
-    //         audience TEXT,
-    //         point TEXT,
-    //         brief TEXT,
-    //         review TEXT,
-    //         priority TEXT,
-    //         priority_status TEXT,
-    //         budget TEXT,
-    //         budget_status TEXT,
-    //         consequence TEXT,
-    //         consequence_status TEXT,
-    //         competition TEXT,
-    //         competition_status TEXT,
-    //         differ TEXT,
-    //         differ_status TEXT,
-    //         marketing TEXT,
-    //         marketing_status TEXT,
-    //         CONSTRAINT Post_PK PRIMARY KEY (id)
-    //     );
-    //     `);
-    // }
+    if (!exists) {
+        await db.exec(`
+            CREATE TABLE IF NOT EXISTS Post (
+            id TEXT NOT NULL,
+            idea TEXT,
+            audience TEXT,
+            point TEXT,
+            brief TEXT,
+            review TEXT,
+            priority TEXT,
+            priority_status TEXT,
+            budget TEXT,
+            budget_status TEXT,
+            consequence TEXT,
+            consequence_status TEXT,
+            competition TEXT,
+            competition_status TEXT,
+            differ TEXT,
+            differ_status TEXT,
+            marketing TEXT,
+            marketing_status TEXT,
+            CONSTRAINT Post_PK PRIMARY KEY (id)
+        );
+        `);
+    }
 
     let result = {
         "id": "",
