@@ -3,7 +3,7 @@ import { open } from 'sqlite'
 import fs from 'fs';
 import path from 'path';
 
-const localpath = path.join('tmp', 'DB.db');
+const localpath = path.join(process.cwd(), 'tmp', 'DB.db');
 const dbPath = path.join('/tmp', 'DB.db');
 if(!fs.existsSync('/tmp')) {
     fs.mkdirSync('/tmp');
