@@ -5,10 +5,13 @@ import { useState, useEffect } from 'react';
 import { AlertTriangle, AlertOctagon, BadgeCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
+import { useToast } from "@/hooks/use-toast"
+import { ToastAction } from "@/components/ui/toast"
 
 
-export default function Page({params}) {
-    console.log(params.id)
+
+export default function Page({ params }) {
+    // console.log(params.id)
     const [point, setPoint] = useState('0')
     const [brief, setBrief] = useState('This is painful to read.')
     const [review, setReview] = useState(`Your business idea faces several limitations, particularly in terms of audience priorities and engagement with the problem you are addressing. The lack of urgency, combined with potential low willingness to pay, presents challenges in convincing users to invest in your product. Moreover, your competition is present and manageable, yet without a clear differentiation strategy, you may struggle to carve out a unique space in the market.`)
@@ -22,86 +25,112 @@ export default function Page({params}) {
     let count = 0
 
     useEffect(() => {
-        const systemPrompt = `# Character
-            You're an idea validator who reviews ideas in detail and grades them from 0 to 100 using key metrics classified only as "Normal," "Bad," or "Good."
-
-            ## Skills
-            ### Skill 1: Evaluate Idea
-            - Review the provided idea.
-            - Consider aspects such as unique angle, audience targeting, and competitive landscape.
-            - Provide an evaluation score between 0-100.
-
-            ### Skill 2: Provide Detailed Review
-            - Write a brief summary and a detailed review of the idea.
-            - Highlight key areas such as Priority, Budget, Consequences, Competition, Differentiation, and Marketing.
-
-            ## Constraints:
-            - Grades for key metrics should only be "Normal", "Bad," or "Good."
-
-            ## Output
-            Don't Comment anything unnecessary
-            No special characters or code formatting
-            Always output exactly in json format like below
-
-            ## Example Input
-            {
-            "idea": "Waifus image generator",
-            "customer": "everyone"
-            }
-
-            ## Example Output
-            {
-                "score": 50,
-                "brief": "You have better things to do.",
-                "review": "Your waifu image generator shows some potential, particularly if you can find a unique angle in a crowded market. However, the lack of urgency, a distinct audience willing to spend, and the competitive landscape are significant hurdles. You may want to refine your audience targeting and clarify what makes your product stand out before moving forward.",
-                "Priority": ["Normal","While the concept of an image generator may appeal to some, it's hard to say it's a top priority for a broad audience. Most individuals have daily concerns that likely center around more pressing needs like work, health, and relationships. This product may attract a niche interest, particularly among anime fans, but lacks widespread urgency."],
-                "Budget":["Normal","Your target audience likely doesn't have a well-defined budget for this specific type of product. While there are markets that pay for custom art or related content, people generally expect digital solutions like this to be free or very low-cost. This leads to a challenge in monetizing the product effectively."],
-                "Consequences":["Bad","The consequences of not having a waifu image generator seem minimal. People are not likely to feel severe negative impacts from the absence of such a tool. This creates a barrier, as potential users may not feel a pressing need to seek out your solution, making it easy for them to ignore."],
-                "Competition":["Good","There's significant competition in the form of free and established platforms catering to art generation and anime content. Brands that operate in this space already have authority and loyal user bases, making it harder for a new player to break through. However, if you focus on something specific or unique within that space, there's still a chance to carve out a niche."],
-                "Differentiation":["Normal","Finding a unique angle could be key, but the current concept lacks clarity on how it stands apart from existing tools. There is an opportunity to differentiate, perhaps by focusing on a specific style or unique features, but that also requires careful thought and execution to avoid becoming just another commodity product."],
-                "Marketing":["Normal","Reaching your audience could be somewhat challenging due to the broad target of 'everyone.' While there are communities passionate about anime and art generation, you might struggle to pinpoint effective, budget-friendly marketing strategies that resonate across such a diverse group. A more focused audience could help refine these efforts."]
-            }`
         const idea = sessionStorage.getItem("idea")
         const audience = sessionStorage.getItem("audience")
-        const propmt = `{
-            "idea": ${idea},
-            "customer": ${audience}
-            }`
         async function gpt() {
             count += 1
             console.log('called api')
-            const data = await fetch("https://api.arliai.com/v1/completions", {
-                method: "POST",
+            try {
+                const data = await fetch("/api/gpt", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        idea: idea,
+                        audience: audience,
+                    })
+                });
+                const response_ai = await data.json()
+                const obj = response_ai['response']
+                console.log('in')
+                console.log(obj)
+                let data2 = obj['Data']
+                if (obj['Type'] != 'json')
+                    data2 = JSON.parse(data2)
+                const response = await fetch('/api/set-db2', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        id: params.id,
+                        idea: idea,
+                        audience: audience,
+                        point: data2['score'],
+                        brief: data2['brief'],
+                        review: data2['review'],
+                        priority: data2['Priority'][1],
+                        priority_status: data2['Priority'][0],
+                        budget: data2['Budget'][1],
+                        budget_status: data2['Budget'][0],
+                        consequence: data2['Consequences'][1],
+                        consequence_status: data2['Consequences'][0],
+                        competition: data2['Competition'][1],
+                        competition_status: data2['Competition'][0],
+                        differ: data2['Differentiation'][1],
+                        differ_status: data2['Differentiation'][0],
+                        marketing: data2['Marketing'][1],
+                        marketing_status: data2['Marketing'][0]
+                    }),
+                })
+                if (response.status == 200)
+                    setData(data2)
+            }
+            catch (err) {
+                console.log(err)
+                setLoaded(true)
+            }
+        }
+
+        async function getData() {
+            const response = await fetch('/api/get-db', {
+                method: 'POST',
                 headers: {
-                    "Authorization": `Bearer ${process.env.NEXT_PUBLIC_API_KEY}`,
-                    "Content-Type": "application/json"
+                    'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    "model": "Meta-Llama-3.1-8B-Instruct",
-                    "prompt": `<|begin_of_text|><|start_header_id|>system<|end_header_id|>${systemPrompt}<|eot_id|><|start_header_id|>user<|end_header_id|>${propmt}<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n`,
-                    "repetition_penalty": 1.1,
-                    "temperature": 0.3,
-                    "top_p": 0.9,
-                    "top_k": 40,
-                    "max_tokens": 1024,
-                    "stream": false
-                })
-            });
-            const obj = await data.json()
-            const text = obj['choices'][0]['text']
-            console.log(text)
-            setData(text)
+                    id: params.id
+                }),
+            })
+            const obj = await response.json()
+            return obj
         }
-        if (!idea || !audience) {
-            setLoaded(true)
-            return
-        }
-        if (count == 0)
-            gpt()
+
+
+        const loadData = getData()
+        loadData.then((data) => {
+            if (!data['Data']['point'] && !data['Data']['brief'] && !data['Data']['review'] && !data['Data']['priority_status'] && !data['Data']['budget_status'] && !data['Data']['consequence_status'] && !data['Data']['competition_status'] && !data['Data']['differ_status'] && !data['Data']['marketing_status']) {
+                // console.log('empty')
+                // console.log(data)
+                if (!idea || !audience) {
+                    setLoaded(true)
+                    return
+                }
+                if (count == 0)
+                    gpt()
+                return
+            }
+            else {
+                let obj = {}
+                obj['score'] = data['Data']['point']
+                obj['brief'] = data['Data']['brief']
+                obj['review'] = data['Data']['review']
+                obj['Priority'] = [data['Data']['priority_status'], data['Data']['priority']]
+                obj['Budget'] = [data['Data']['budget_status'], data['Data']['budget']]
+                obj['Consequences'] = [data['Data']['consequence_status'], data['Data']['consequence']]
+                obj['Competition'] = [data['Data']['competition_status'], data['Data']['competition']]
+                obj['Differentiation'] = [data['Data']['differ_status'], data['Data']['differ']]
+                obj['Marketing'] = [data['Data']['marketing_status'], data['Data']['marketing']]
+                // stringify = JSON.stringify(stringify)
+                setData(obj)
+                return
+            }
+        })
     }, [])
 
     useEffect(() => {
-        // console.log(data);
+        console.log(data);
         setContent()
     }, [data])
 
@@ -111,16 +140,15 @@ export default function Page({params}) {
         if (data) {
             setLoaded(true)
             try {
-                const data2 = JSON.parse(data)
-                setPoint(data2['score'])
-                setBrief(data2['breif'])
-                setReview(data2['review'])
-                setPriority(data2['Priority'])
-                setBudget(data2['Budget'])
-                setConsequences(data2['Consequences'])
-                setCompetition(data2['Competition'])
-                setDifferentiation(data2['Differentiation'])
-                setMarketing(data2['Marketing'])
+                setPoint(data['score'])
+                setBrief(data['brief'])
+                setReview(data['review'])
+                setPriority(data['Priority'])
+                setBudget(data['Budget'])
+                setConsequences(data['Consequences'])
+                setCompetition(data['Competition'])
+                setDifferentiation(data['Differentiation'])
+                setMarketing(data['Marketing'])
             }
             catch (err) {
                 const point = Math.floor(Math.random() * 50) + 10;
@@ -159,16 +187,57 @@ export default function Page({params}) {
         return 'bg-gradient-to-br from-green-300 to-green-500'
     }
 
+    const copyToClipboard = (text) => {
+        return new Promise((resolve, reject) => {
+            if (navigator.clipboard && window.isSecureContext) {
+                // For modern browsers and secure contexts
+                navigator.clipboard.writeText(text)
+                    .then(resolve)
+                    .catch(reject);
+            } else {
+                // Fallback for older browsers and mobile
+                let textArea = document.createElement("textarea");
+                textArea.value = text;
+                textArea.style.position = "fixed";
+                textArea.style.left = "-999999px";
+                textArea.style.top = "-999999px";
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+
+                try {
+                    document.execCommand('copy');
+                    resolve();
+                } catch (err) {
+                    reject(err);
+                } finally {
+                    textArea.remove();
+                }
+            }
+        });
+    };
+
+    const { toast } = useToast()
+    const handleShareResults = () => {
+        copyToClipboard(window.location.href).then(() => {
+            toast({
+                title: "Link copied to clipboard!",
+                description: "Ready to share to everyone",
+                action: <ToastAction altText="🎉">🎉</ToastAction>,
+            })
+        });
+    };
+
     return (
         <div className={`min-h-screen p-6 px-[10%] lg:px-[20%] bg-gradient-to-br from-green-50 to-blue-100`}>
             {!loaded ? (
                 <div className='flex items-center justify-center content-center h-[90vh]'>
                     <div className="flex flex-col items-center justify-center gap-5">
                         <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500"></div>
-                        <div className='text-2xl font-mono text-blcak'>
-                            Generating
-                            {[...Array(5).keys()].map(i => (
-                                <span className="animate-pulse" style={{ animationDelay: `${i * 0.3}s` }} key={i}>.</span>
+                        <div className='text-2xl font-mono text-black'>
+                            Generating&nbsp;
+                            {[...Array(3).keys()].map(i => (
+                                <span className="animate-ping" style={{ animationDelay: `${i * 0.2}s` }} key={i}>.</span>
                             ))}
                         </div>
                     </div>
@@ -176,14 +245,14 @@ export default function Page({params}) {
             ) : (
                 <div className="space-y-8">
                     <header className="flex flex-col md:flex-row justify-between items-center mb-6 bg-white p-6 rounded-lg shadow-md">
-                        <h1 className="text-3xl font-bold text-indigo-700 mb-4 md:mb-0">Your Audit Report 🚀</h1>
+                        <h1 className="text-3xl font-bold text-indigo-700 mb-4 md:mb-0">Your Report 🚀</h1>
                         <div className="flex gap-4">
                             <a href='../'>
                                 <Button variant="outline" className="border-indigo-500 text-indigo-500 hover:bg-indigo-50">
                                     New Audit
                                 </Button>
                             </a>
-                            <Button className="bg-indigo-500 hover:bg-indigo-600 text-white">Share Results</Button>
+                            <Button className="bg-indigo-500 hover:bg-indigo-600 text-white" onClick={handleShareResults}>Share Results</Button>
                         </div>
                     </header>
 
@@ -222,18 +291,21 @@ export default function Page({params}) {
 
                     <Card className="bg-gradient-to-r from-orange-100 to-amber-100 shadow-md">
                         <CardHeader>
-                            <h2 className="text-xl font-semibold text-gray-800">Turn Your Idea into a Profitable Business</h2>
+                            <h2 className="text-xl font-semibold text-gray-800">Need a more specialized advice to make a profitable business?</h2>
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <p className="text-gray-700">Gain clarity with 9 actionable marketing ideas. Acquire more users, nurture them with content, and enjoy new sales.</p>
                             <div className="flex w-full h-full">
-                                <input type="email" placeholder="Your email" className="px-4 py-2 rounded-none rounded-l-md focus:outline-none focus:ring-2 focus:ring-indigo-500 w-[70%] bg-white text-black" />
-                                <button className="px-4 py-2 rounded-none rounded-r-md bg-zinc-800 hover:bg-zinc-700 text-white">Unlock for FREE</button>
+                                <a>
+                                    <button className="px-4 py-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-white">Contact us for free</button>
+                                </a>
+                                {/* <input type="email" placeholder="Your email" className="px-4 py-2 rounded-none rounded-l-md focus:outline-none focus:ring-2 focus:ring-indigo-500 w-[70%] bg-white text-black" />
+                                <button className="px-4 py-2 rounded-none rounded-r-md bg-zinc-800 hover:bg-zinc-700 text-white">Contact us for free</button> */}
                             </div>
                         </CardContent>
                     </Card>
 
-                    {['User Acquisition Ideas', 'Content Marketing Ideas', 'Conversion Rate Optimization Ideas'].map((section, index) => (
+                    {/* {['User Acquisition Ideas', 'Content Marketing Ideas', 'Conversion Rate Optimization Ideas'].map((section, index) => (
                         <Card key={index} className="bg-white shadow-md hover:shadow-lg transition-shadow duration-300">
                             <CardHeader>
                                 <h2 className="text-xl font-semibold text-gray-800">{`3 ${section}`}</h2>
@@ -251,7 +323,7 @@ export default function Page({params}) {
                                 ))}
                             </CardContent>
                         </Card>
-                    ))}
+                    ))} */}
 
                     <Button className="w-full py-5 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors duration-300 font-3xl">
                         Explore More Free Tools
@@ -262,6 +334,7 @@ export default function Page({params}) {
                         <a href="#" className="hover:text-gray-700 transition-colors duration-300">Terms of Service</a>
                         <a href="#" className="hover:text-gray-700 transition-colors duration-300">QuyVuong</a>
                     </footer>
+
                 </div>
             )}
 

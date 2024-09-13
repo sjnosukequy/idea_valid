@@ -112,20 +112,33 @@ export default function Home() {
     }
   }, []);
 
-  function handleIdeaSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleIdeaSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     sessionStorage.setItem("idea", idea);
     sessionStorage.setItem("audience", audience);
-    const array = new Uint32Array(1);
+    const array = new Uint32Array(3);
     self.crypto.getRandomValues(array);
-    router.push(`/idea-valid/${array[0]}`)
+    const number = (array[0] + array[1] + array[2]).toString();
+    const response = await fetch('/api/set-db1', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        id: number,
+        idea: idea,
+        audience: audience
+      }),
+    })
+    if (response.status == 200)
+      router.push(`/idea-valid/${number}`)
   }
 
   return (
     <div className="flex flex-col md:flex-row w-[100vw] h-[100vh]">
       <div className="relative flex flex-col flex-wrap justify-center content-center w-full md:w-[50%] lg:w-[60%] p-5 gap-5">
         <BackgroundPattern />
-        <div className="absolute w-full h-full left-0 bg-slate-100 opacity-70 z-[1] pointer-events-none"></div>
+        <div className="absolute w-full h-full left-0 bg-current invert opacity-70 z-[1] pointer-events-none"></div>
         <div className="z-[2]">
           <h1 className="mb-3 text-5xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400">
             100% FREE IDEA VALIDATOR

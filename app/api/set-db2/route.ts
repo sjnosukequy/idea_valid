@@ -1,0 +1,109 @@
+import { NextResponse } from 'next/server'
+import sqlite3 from 'sqlite3'
+import { open } from 'sqlite'
+
+export async function GET(request: Request) {
+    return NextResponse.json({ Nice: request }, { status: 200 })
+}
+
+
+export async function POST(request: Request) {
+    const {
+        id,
+        idea,
+        audience,
+        point,
+        brief,
+        review,
+        priority,
+        priority_status,
+        budget,
+        budget_status,
+        consequence,
+        consequence_status,
+        competition,
+        competition_status,
+        differ,
+        differ_status,
+        marketing,
+        marketing_status
+    } = await request.json();
+
+    let result = {
+        "stmt": {},
+        "lastID": 0,
+        "changes": 0
+    }
+
+    if (
+        id &&
+        idea &&
+        audience &&
+        point &&
+        brief &&
+        review &&
+        priority &&
+        priority_status &&
+        budget &&
+        budget_status &&
+        consequence &&
+        consequence_status &&
+        competition &&
+        competition_status &&
+        differ &&
+        differ_status &&
+        marketing &&
+        marketing_status
+    ) {
+        const db = await open({
+            filename: 'database/DB.db',
+            driver: sqlite3.Database
+        })
+
+        const addQuerry = await db.run(
+            'UPDATE Post set ' +
+            'idea = :idea, ' +
+            'audience = :audience, ' +
+            'point = :point, ' +
+            'brief = :brief, ' +
+            'review = :review, ' +
+            'priority = :priority, ' +
+            'priority_status = :priority_status, ' +
+            'budget = :budget, ' +
+            'budget_status = :budget_status, ' +
+            'consequence = :consequence, ' +
+            'consequence_status = :consequence_status, ' +
+            'competition = :competition, ' +
+            'competition_status = :competition_status, ' +
+            'differ = :differ, ' +
+            'differ_status = :differ_status, ' +
+            'marketing = :marketing, ' +
+            'marketing_status = :marketing_status ' +
+            'WHERE id = :id',
+            {
+                ':id': id,
+                ':idea': idea,
+                ':audience': audience,
+                ':point': point,
+                ':brief': brief,
+                ':review': review,
+                ':priority': priority,
+                ':priority_status': priority_status,
+                ':budget': budget,
+                ':budget_status': budget_status,
+                ':consequence': consequence,
+                ':consequence_status': consequence_status,
+                ':competition': competition,
+                ':competition_status': competition_status,
+                ':differ': differ,
+                ':differ_status': differ_status,
+                ':marketing': marketing,
+                ':marketing_status': marketing_status,
+            });
+
+        result['stmt'] = addQuerry['stmt']
+        result['lastID'] = addQuerry?.['lastID'] ?? 0;
+        result['changes'] = addQuerry?.['changes'] ?? 0;
+    }
+    return NextResponse.json({ Data: result }, { status: 200 })
+}
