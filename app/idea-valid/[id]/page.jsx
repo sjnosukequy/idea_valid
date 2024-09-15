@@ -236,11 +236,11 @@ export default function Page({ params }) {
     };
 
     return (
-        <div className={`min-h-screen p-6 px-[10%] lg:px-[20%] bg-gradient-to-br from-white to-slate-100`}>
+        <div className={`min-h-screen p-6 px-[10%] lg:px-[20%] bg-[#F8FAFC]`}>
             {!loaded ? (
                 <div className='flex items-center justify-center content-center h-[90vh]'>
                     <div className="flex flex-col items-center justify-center gap-5">
-                        <div className="loading loading-ring loading-lg w-[60%] text-[#22C55E]"></div>
+                        <div className="loading loading-ring loading-lg w-[60%] text-[#61BFAD]"></div>
                         <div className='text-2xl font-mono text-black'>
                             Generating&nbsp;
                             {[...Array(3).keys()].map(i => (
@@ -252,14 +252,14 @@ export default function Page({ params }) {
             ) : (
                 <div className="space-y-8">
                     <header className="flex flex-col md:flex-row justify-between items-center mb-6 bg-white p-6 rounded-lg shadow-md">
-                        <h1 className="text-3xl font-bold text-amber-300 mb-4 md:mb-0">Your Report 🚀</h1>
+                        <h1 className="text-3xl font-bold mb-4 md:mb-0">Your Report 🚀</h1>
                         <div className="flex gap-4">
                             <a href='../'>
-                                <Button variant="outline" className="border-[#111827] text-[#111827] hover:bg-transparent hover:text-[#22C55E] hover:border-[#22C55E] hover:scale-105 transition-all">
+                                <Button className="bg-[#61BFAD] transition-all hover:bg-[#61BFAD] hover:scale-105 text-white">
                                     New Audit
                                 </Button>
                             </a>
-                            <Button className="bg-[#22C55E] transition-all hover:bg-[#22C55E] hover:scale-105 text-white" onClick={handleShareResults}>Share Results</Button>
+                            <Button className="bg-[#61BFAD] transition-all hover:bg-[#61BFAD] hover:scale-105 text-white" onClick={handleShareResults}>Share Results</Button>
                         </div>
                     </header>
 
@@ -304,7 +304,7 @@ export default function Page({ params }) {
                             <p className="text-gray-700">Gain clarity with 9 actionable marketing ideas. Acquire more users, nurture them with content, and enjoy new sales.</p>
                             <div className="flex w-full h-full">
                                 <a>
-                                    <button className="px-4 py-2 rounded-lg bg-zinc-800 hover:scale-105 hover:bg-[#22C55E] transition-all text-white">Contact us for free</button>
+                                    <button className="px-4 py-2 rounded-lg bg-zinc-800 hover:scale-105 hover:bg-[#61BFAD] transition-all text-white">Contact us for free</button>
                                 </a>
                                 {/* <input type="email" placeholder="Your email" className="px-4 py-2 rounded-none rounded-l-md focus:outline-none focus:ring-2 focus:ring-indigo-500 w-[70%] bg-white text-black" />
                                 <button className="px-4 py-2 rounded-none rounded-r-md bg-zinc-800 hover:bg-zinc-700 text-white">Contact us for free</button> */}
@@ -332,7 +332,7 @@ export default function Page({ params }) {
                         </Card>
                     ))} */}
 
-                    <Button className="w-full py-5 bg-[#22C55E] text-white rounded-md hover:scale-105 hover:bg-[#22C55E] transition-all font-5xl">
+                    <Button className="w-full py-5 bg-[#61BFAD] text-white rounded-md hover:scale-105 hover:bg-[#61BFAD] transition-all text-lg">
                         Explore More Free Tools
                     </Button>
 
