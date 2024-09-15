@@ -1,34 +1,25 @@
 import { NextResponse } from 'next/server'
-import { db } from '../../../database/sql'
+// import { db } from '../../../database/sql'
+import { sql } from "@vercel/postgres";
 
 export async function GET(request: Request) {
-  return NextResponse.json({ Nice: request }, { status: 200 })
+  return NextResponse.json({ request }, { status: 200 })
 }
 
 
 export async function POST(request: Request) {
   const formData = await request.json()
-  const id = formData['id']
-  const idea = formData['idea']
-  const audience = formData['audience']
- 
-  const result = {
-    "stmt": {},
-    "lastID": 0,
-    "changes": 0
+  const id = formData['id'].toLowerCase()
+  const idea = formData['idea'].toLowerCase()
+  const audience = formData['audience'].toLowerCase()
+
+  const postQuerry = await sql`SELECT * FROM Post Where id = ${id} or idea = ${idea} and audience = ${audience}`
+  if (postQuerry.rowCount == 0) {
+    const addQuerry = await sql`INSERT INTO Post (id, idea, audience) VALUES (${id}, ${idea}, ${audience})`
+    return NextResponse.json({ Data: addQuerry }, { status: 200 })
   }
-  const postQuerry = await db.get('SELECT * FROM Post Where id = ?', id)
-  if (!postQuerry) {
-    const addQuerry = await db.run(
-      'INSERT INTO Post (id, idea, audience) VALUES (:id, :idea, :audience)',
-      {
-        ':id': id,
-        ':idea': idea,
-        ':audience': audience
-      })
-    result['stmt'] = addQuerry['stmt']
-    result['lastID'] = addQuerry?.['lastID'] ?? 0;
-    result['changes'] = addQuerry?.['changes'] ?? 0;
+  if (postQuerry.rowCount == 1) {
+    return NextResponse.json({ Data: postQuerry }, { status: 201 })
   }
-  return NextResponse.json({ Data: result }, { status: 200 })
+  return NextResponse.json({ Data: null }, { status: 200 })
 }

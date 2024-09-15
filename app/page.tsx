@@ -7,9 +7,11 @@ import styles from './styles.module.css'
 import CustomCard from "@/components/ui/CustomCard";
 import { useRouter } from 'next/navigation'
 import { Rocket, Users, ArrowRight } from 'lucide-react';
+import type { ReactNode } from 'react';
+import { useToast } from "@/hooks/use-toast"
 
 const BackgroundPattern = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="400 20 200 600" className="blur-sm absolute left-0 h-full w-full text-emerald-600 opacity-[80%] z-[0] pointer-events-none">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="400 20 200 600" className="blur-md absolute left-0 h-full w-full text-[#22C55E] opacity-[80%] z-[0] pointer-events-none">
     <defs>
       <pattern id="smallGrid" width="50" height="50" patternUnits="userSpaceOnUse">
         <path d="M 50 0 L 0 0 0 50" fill="none" stroke="currentColor" strokeWidth="0.5" opacity="0.3" />
@@ -38,6 +40,43 @@ const BackgroundPattern = () => (
     <path d="M0,850 Q250,950 500,850 T1000,850" fill="none" stroke="currentColor" strokeWidth="2" opacity="0.5" /> */}
   </svg>
 );
+
+const BackgroundPattern2 = () => (
+  <svg className="absolute hidden md:block md:top-1/4 lg:top-8 right-1/4 lg:m-0 z-[1] text-[#22C55E] opacity-[20%]" width="404" height="392" fill="none" viewBox="0 0 404 392">
+    <defs>
+      <pattern id="837c3e70-6c3a-44e6-8854-cc48c737b659" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+        <rect x="0" y="0" width="4" height="4" fill="currentColor"></rect>
+      </pattern>
+    </defs>
+    <rect width="404" height="392" fill="url(#837c3e70-6c3a-44e6-8854-cc48c737b659)"></rect>
+  </svg>
+);
+
+const Marquee = ({ children, direction = 'left', index = 0 }: { children: ReactNode, direction: string, index: number }) => {
+  const [speed, setSpeed] = useState(0)
+
+  useEffect(() => {
+    // const totalLength = document.querySelector('.animate-marquee')
+    const sliderList = document.querySelectorAll<HTMLElement>(".slider")
+    const sliderWidth = sliderList[index].getBoundingClientRect().width || 0
+    setSpeed(sliderWidth / 100)
+    // console.log(index, sliderWidth, sliderList[index])
+  }, []);
+
+  return (
+    <div className="overflow-hidden whitespace-nowrap">
+      <div
+        className={`slider inline-block ${styles['animate-marquee']}`}
+        style={{
+          animationDirection: `${direction}` === 'left' ? 'normal' : 'reverse',
+          animationDuration: `${speed}s`,
+        }}
+      >
+        {children}
+      </div>
+    </div>
+  );
+}
 
 export default function Home() {
   const router = useRouter()
@@ -91,31 +130,140 @@ export default function Home() {
       "Rocking it with that idea.",
       "Marketing Strategy Generator",
       "91"
+    ],
+    [
+      "Mediocrity in motion.",
+      "Virtual cooking classes for kids",
+      "40"
+    ],
+    [
+      "Slightly better than nothing.",
+      "Personalized skincare routine app",
+      "47"
+    ],
+    [
+      "A swing and a miss.",
+      "Smart home energy tracker",
+      "38"
+    ],
+    [
+      "You're not even trying, are you?",
+      "Customized podcast playlist generator",
+      "29"
+    ],
+    [
+      "Almost impressive, but not quite.",
+      "AI-powered book recommendation engine",
+      "61"
+    ],
+    [
+      "It has potential, but needs work.",
+      "Eco-friendly packaging subscription service",
+      "58"
+    ],
+    [
+      "Innovative, but execution lacks finesse.",
+      "Collaborative task manager for remote teams",
+      "67"
+    ],
+    [
+      "The idea is there, but the magic is missing.",
+      "Voice-controlled meditation guide",
+      "55"
+    ],
+    [
+      "This could change the game, eventually.",
+      "Automated video editing for influencers",
+      "78"
+    ],
+    [
+      "Way to go! You've nailed it.",
+      "AI-driven social media content planner",
+      "87"
+    ],
+    [
+      "Almost a masterpiece.",
+      "Interactive fitness app with live coaches",
+      "74"
+    ],
+    [
+      "This one’s a hidden gem.",
+      "VR travel experiences on demand",
+      "81"
+    ],
+    [
+      "Your creativity is showing.",
+      "AI-enhanced coding assistant",
+      "90"
+    ],
+    [
+      "Bold move, but it needs polish.",
+      "Subscription box for indie films",
+      "54"
+    ],
+    [
+      "A solid effort with room to grow.",
+      "Smart calendar with automatic scheduling",
+      "66"
+    ],
+    [
+      "Not bad, but don't get too excited.",
+      "Personalized nutrition tracker",
+      "57"
+    ],
+    [
+      "This could work, in another timeline.",
+      "AR shopping app for home decor",
+      "42"
+    ],
+    [
+      "Are you sure this is finished?",
+      "AI-powered email response generator",
+      "36"
+    ],
+    [
+      "An idea worth refining.",
+      "B2B influencer marketplace",
+      "64"
+    ],
+    [
+      "This might actually be something.",
+      "Automatic blog content writer",
+      "72"
     ]
   ]);
 
   const [idea, setIdea] = useState('');
   const [audience, setAudience] = useState('');
+  const { toast } = useToast()
 
-  useEffect(() => {
-    const sliderList = document.querySelectorAll<HTMLElement>("#slider li")
-    if (sliderList) {
-      const lineHeight = sliderList[0].offsetHeight + 30;
-      const slider = document.querySelector<HTMLElement>("#slider");
-      if (slider) {
-        slider.style.height = lineHeight * sliderList.length + "px";
-        const sliderRect = slider.getBoundingClientRect();
-        const totalHeight = sliderRect.height;
-        const time = (totalHeight) / 100; // 500px / sec
-        slider.style.animationDuration = time + "s";
-      }
-    }
-  }, []);
+  // useEffect(() => {
+  //   const sliderList = document.querySelectorAll<HTMLElement>("#slider li")
+  //   if (sliderList) {
+  //     const lineHeight = sliderList[0].offsetHeight + 30;
+  //     const slider = document.querySelector<HTMLElement>("#slider");
+  //     if (slider) {
+  //       slider.style.height = lineHeight * sliderList.length + "px";
+  //       const sliderRect = slider.getBoundingClientRect();
+  //       const totalHeight = sliderRect.height;
+  //       const time = (totalHeight) / 100; // 500px / sec
+  //       slider.style.animationDuration = time + "s";
+  //     }
+  //   }
+  // }, []);
 
   async function handleIdeaSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    sessionStorage.setItem("idea", idea);
-    sessionStorage.setItem("audience", audience);
+    if (!idea || !audience) {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: "Pleas fill out all the fields.",
+      })
+      return;
+    }
+    sessionStorage.setItem("idea", idea.toLowerCase());
+    sessionStorage.setItem("audience", audience.toLowerCase());
     const array = new Uint32Array(3);
     self.crypto.getRandomValues(array);
     const number = (array[0] + array[1] + array[2]).toString();
@@ -125,46 +273,65 @@ export default function Home() {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        id: number,
-        idea: idea,
-        audience: audience
+        id: number.toLowerCase(),
+        idea: idea.toLowerCase(),
+        audience: audience.toLowerCase()
       }),
     })
     if (response.status == 200)
       router.push(`/idea-valid/${number}`)
+    if (response.status == 201) {
+      response.json().then((data) => {
+        router.push(`/idea-valid/${data['Data']['rows'][0]['id']}`)
+        // console.log(data)
+      })
+    }
   }
 
+  const chunkArray = (arr: Array<Array<string>>, size: number) => {
+    return Array.from({ length: Math.ceil(arr.length / size) }, (v, i) =>
+      arr.slice(i * size, i * size + size)
+    );
+  };
+  
+  const reviewChunks = chunkArray(review, Math.ceil(review.length / 5));
+
   return (
-    <div className="flex flex-col md:flex-row w-[100vw] h-[100vh]">
-      <div className="relative flex flex-col flex-wrap justify-center content-center w-full md:w-[50%] lg:w-[60%] p-5 gap-5">
+    <div className="relative flex flex-col md:flex-row w-[100vw] h-[100vh] bg-gradient-to-br from-white to-slate-100">
+      <div className="relative flex flex-col flex-wrap justify-center content-center w-full md:w-[50%] lg:w-[55%] p-5 gap-5">
         <BackgroundPattern />
-        <div className="absolute w-full h-full left-0 bg-current invert opacity-70 z-[1] pointer-events-none"></div>
+        {/* <div className="absolute w-full h-full left-0 bg-current invert opacity-10 z-[1] pointer-events-none"></div> */}
         <div className="z-[2]">
-          <h1 className="mb-3 text-5xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400">
+          {/* <h1 className="mb-3 text-5xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400">
+            100% FREE IDEA VALIDATOR
+          </h1> */}
+          <h1 className="mb-3 text-5xl md:text-6xl font-mono text-[#111827]">
             100% FREE IDEA VALIDATOR
           </h1>
-          <p className="text-2xl mb-7">Get honest feedback about your business idea. Build something people want.</p>
+          <p className="text-2xl mb-7 font-mono text-[#111827]">Get honest feedback about your business idea. Build something people want.</p>
           <div className="flex flex-col gap-7 w-full lg:w-[70%] mt-3">
             <form onSubmit={handleIdeaSubmit} className="space-y-8">
-              <div className="grid w-full items-center gap-1.5">
+              <div className="grid w-full items-center gap-1.5 text-[#111827]">
                 <Label className="text-md font-bold" htmlFor="idea">
-                  <Rocket className="inline-block mr-2" size={20} />
-                  Your business idea*
+                  <Rocket className="inline-block mr-2 text-red-500" size={20} />
+                  Your business idea <span className="text-red-500">*</span>
                 </Label>
-                <Input value={idea} onChange={(e) => setIdea(e.target.value)} className="border-black backdrop-blur-lg text-md p-5" type="text" id="idea" name="idea" placeholder="AI-powered fitness plan generator" />
+                <Input value={idea} onChange={(e) => setIdea(e.target.value)} className="border-[#61BFAD] border-[0.1rem] text-black backdrop-blur-lg text-md p-5" type="text" id="idea" name="idea" placeholder="AI-powered fitness plan generator" />
               </div>
-              <div className="grid w-full items-center gap-1.5">
+              <div className="grid w-full items-center gap-1.5 text-[#111827]">
                 <Label className="text-md font-bold" htmlFor="audience">
-                  <Users className="inline-block mr-2" size={20} />
-                  Your audience*
+                  <Users className="inline-block mr-2 text-red-500" size={20} />
+                  Your audience <span className="text-red-500">*</span>
                 </Label>
-                <Input value={audience} onChange={(e) => setAudience(e.target.value)} className="border-black backdrop-blur-lg text-md p-5" type="text" id="audience" name="audience" placeholder="Young parents" />
+                <Input value={audience} onChange={(e) => setAudience(e.target.value)} className="border-[#61BFAD] border-[0.1rem] text-black backdrop-blur-lg text-md p-5" type="text" id="audience" name="audience" placeholder="Young parents" />
               </div>
 
               <div className="w-full mt-7">
-                <Button type="submit" className="w-full py-7 text-xl font-black bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-lg transition duration-300 ease-in-out transform hover:scale-105">
+                {/* <Button type="submit" className="w-full py-7 text-xl font-black bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-lg transition duration-300 ease-in-out transform hover:scale-105">
+                  Validate my idea for FREE <ArrowRight className="inline-block ml-2" size={24} /> </Button> */}
+                <Button type="submit" className="w-full py-7 text-xl bg-[#111827] hover:bg-[#e11d48] text-white rounded-lg transition duration-300 ease-in-out transform hover:scale-105">
                   Validate my idea for FREE <ArrowRight className="inline-block ml-2" size={24} /> </Button>
-                <p className="mt-2">22,323 business ideas validated already</p>
+                <p className="mt-2 text-[#111827] italic font-mono">22,323 business ideas validated already</p>
               </div>
 
             </form>
@@ -172,14 +339,32 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <div className="relative w-full md:w-[50%] lg:w-[40%] h-full bg-gradient-to-br from-purple-500 to-pink-500 dark:from-purple-800 dark:to-pink-800 overflow-hidden box-border hidden md:block">
-        <ul id='slider' className={styles.slider}>
+      <BackgroundPattern2 />
+      <div className="relative w-full md:w-[50%] bg-transparent ps-5 lg:w-[45%] h-full overflow-hidden box-border hidden md:block">
+
+        {/* <ul id='slider' className={styles.slider}>
           {review.map((reviewData, index) => (
             <li key={index}>
               <CustomCard review={reviewData[0]} prod={reviewData[1]} num={parseInt(reviewData[2])} />
             </li>
           ))}
-        </ul>
+        </ul> */}
+        <div className="absolute h-full flex flex-col justify-center space-y-3 z-[2]">
+          {reviewChunks.map((chunk, index) => {
+            // console.log(index)
+            return (
+              <Marquee key={index} direction={index % 2 === 0 ? 'left' : 'right'} index={index}>
+                <div className="flex space-x-4">
+                  {chunk.map((reviewData, cardIndex) => (
+                    <div key={cardIndex}>
+                      <CustomCard review={reviewData[0]} prod={reviewData[1]} num={parseInt(reviewData[2])} />
+                    </div>
+                  ))}
+                </div>
+              </Marquee>
+            )
+          })}
+        </div>
       </div>
     </div>
   );

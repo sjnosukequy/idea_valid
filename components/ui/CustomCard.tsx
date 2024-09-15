@@ -24,7 +24,7 @@ const CustomCard = function (props: { review: string | null | undefined; prod: s
     const Icon = icon;
 
     return (
-        <Card className={`w-full overflow-hidden ${bgColor} ${borderColor} border-2 shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105`}>
+        <Card className={`w-full overflow-hidden ${bgColor} ${borderColor} border-2 transition-all duration-300 scale-95 hover:scale-100`}>
             <CardContent className="p-6">
                 <div className="flex items-center space-x-4">
                     <div className="relative w-20 h-20">

@@ -15,14 +15,14 @@ export default function Page({ params }) {
     // console.log(params.id)
     const router = useRouter()
     const [point, setPoint] = useState('0')
-    const [brief, setBrief] = useState('This is painful to read.')
-    const [review, setReview] = useState(`Your business idea faces several limitations, particularly in terms of audience priorities and engagement with the problem you are addressing. The lack of urgency, combined with potential low willingness to pay, presents challenges in convincing users to invest in your product. Moreover, your competition is present and manageable, yet without a clear differentiation strategy, you may struggle to carve out a unique space in the market.`)
-    const [Priority, setPriority] = useState(['Bad', `Your audience doesn't see this problem as a priority. It's not something they constantly think about or deal with on a daily or weekly basis. This lack of urgency can lead to low engagement with your solution, making it hard to gain traction.`])
-    const [Budget, setBudget] = useState(['Bad', 'Your audience may not be accustomed to paying for a solution to this problem. If they typically expect free solutions or workaround methods, it can create a mental block against purchasing your product. This could hinder your ability to convert interest into sales.'])
-    const [Consequences, setConsequences] = useState(['Normal', `Not solving this problem does not have serious negative consequences for your audience. They won't feel any significant fear or pressure to find a solution, which means they might ignore your offering altogether. This affects your chances of convincing users that they need your product.`])
-    const [Competition, setCompetition] = useState(['Normal', `There seems to be moderate competition in this space, but it's not overwhelmingly fierce. While there are existing players, they may not be large brands, which provides some opportunity. However, you'll need a clear strategy to stand out to avoid being overshadowed.`])
-    const [Differentiation, setDifferentiation] = useState(['Bad', `It's tough to identify clear opportunities for differentiation in your idea. Without a strong unique selling proposition, your product risks blending into a crowded marketplace. You need to rethink your offering to highlight what makes it distinctly better or different to attract attention.`])
-    const [Marketing, setMarketing] = useState(['Bad', `Acquiring users in this market might prove challenging. Your target audience may not be easily reachable through standard marketing channels, which can hinder your user acquisition efforts. You'll need to invest time in figuring out the right messages and platforms to connect with them effectively.`])
+    const [brief, setBrief] = useState('Invalid input.')
+    const [review, setReview] = useState(`The idea and customer fields are empty, making it impossible to evaluate or provide any insights. Please provide a specific idea and target customer for a proper review.`)
+    const [Priority, setPriority] = useState(['Bad', `Without a clear idea, it's difficult to determine any priority level. An undefined concept cannot be prioritized.`])
+    const [Budget, setBudget] = useState(['Bad', 'There is no budget consideration without a defined idea.'])
+    const [Consequences, setConsequences] = useState(['Normal', `The lack of an idea means there are no consequences to discuss.`])
+    const [Competition, setCompetition] = useState(['Normal', `Without an idea, there is no competitive landscape to analyze.`])
+    const [Differentiation, setDifferentiation] = useState(['Bad', `There is no differentiation to consider without a specific concept.`])
+    const [Marketing, setMarketing] = useState(['Bad', `Marketing strategies cannot be evaluated without a defined target audience and idea.`])
     const [data, setData] = useState(null)
     let count = 0
 
@@ -56,9 +56,9 @@ export default function Page({ params }) {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        id: params.id,
-                        idea: idea,
-                        audience: audience,
+                        id: params.id.toLowerCase(),
+                        idea: idea.toLowerCase(),
+                        audience: audience.toLowerCase(),
                         point: data2['score'],
                         brief: data2['brief'],
                         review: data2['review'],
@@ -190,7 +190,7 @@ export default function Page({ params }) {
 
     function getBackgroundGradient(point) {
         if (point < 50) return 'bg-gradient-to-br from-red-300 to-red-500'
-        if (point < 75) return 'bg-gradient-to-br from-orange-300 to-orange-500'
+        if (point < 75) return 'bg-gradient-to-br from-amber-300 to-amber-500'
         return 'bg-gradient-to-br from-green-300 to-green-500'
     }
 
@@ -236,11 +236,11 @@ export default function Page({ params }) {
     };
 
     return (
-        <div className={`min-h-screen p-6 px-[10%] lg:px-[20%] bg-gradient-to-br from-green-50 to-blue-100`}>
+        <div className={`min-h-screen p-6 px-[10%] lg:px-[20%] bg-gradient-to-br from-white to-slate-100`}>
             {!loaded ? (
                 <div className='flex items-center justify-center content-center h-[90vh]'>
                     <div className="flex flex-col items-center justify-center gap-5">
-                        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500"></div>
+                        <div className="loading loading-ring loading-lg w-[60%] text-[#22C55E]"></div>
                         <div className='text-2xl font-mono text-black'>
                             Generating&nbsp;
                             {[...Array(3).keys()].map(i => (
@@ -252,14 +252,14 @@ export default function Page({ params }) {
             ) : (
                 <div className="space-y-8">
                     <header className="flex flex-col md:flex-row justify-between items-center mb-6 bg-white p-6 rounded-lg shadow-md">
-                        <h1 className="text-3xl font-bold text-indigo-700 mb-4 md:mb-0">Your Report 🚀</h1>
+                        <h1 className="text-3xl font-bold text-amber-300 mb-4 md:mb-0">Your Report 🚀</h1>
                         <div className="flex gap-4">
                             <a href='../'>
-                                <Button variant="outline" className="border-indigo-500 text-indigo-500 hover:bg-indigo-50">
+                                <Button variant="outline" className="border-[#111827] text-[#111827] hover:bg-transparent hover:text-[#22C55E] hover:border-[#22C55E] hover:scale-105 transition-all">
                                     New Audit
                                 </Button>
                             </a>
-                            <Button className="bg-indigo-500 hover:bg-indigo-600 text-white" onClick={handleShareResults}>Share Results</Button>
+                            <Button className="bg-[#22C55E] transition-all hover:bg-[#22C55E] hover:scale-105 text-white" onClick={handleShareResults}>Share Results</Button>
                         </div>
                     </header>
 
@@ -296,7 +296,7 @@ export default function Page({ params }) {
                         ))}
                     </div>
 
-                    <Card className="bg-gradient-to-r from-orange-100 to-amber-100 shadow-md">
+                    <Card className="bg-amber-200 shadow-md">
                         <CardHeader>
                             <h2 className="text-xl font-semibold text-gray-800">Need a more specialized advice to make a profitable business?</h2>
                         </CardHeader>
@@ -304,7 +304,7 @@ export default function Page({ params }) {
                             <p className="text-gray-700">Gain clarity with 9 actionable marketing ideas. Acquire more users, nurture them with content, and enjoy new sales.</p>
                             <div className="flex w-full h-full">
                                 <a>
-                                    <button className="px-4 py-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-white">Contact us for free</button>
+                                    <button className="px-4 py-2 rounded-lg bg-zinc-800 hover:scale-105 hover:bg-[#22C55E] transition-all text-white">Contact us for free</button>
                                 </a>
                                 {/* <input type="email" placeholder="Your email" className="px-4 py-2 rounded-none rounded-l-md focus:outline-none focus:ring-2 focus:ring-indigo-500 w-[70%] bg-white text-black" />
                                 <button className="px-4 py-2 rounded-none rounded-r-md bg-zinc-800 hover:bg-zinc-700 text-white">Contact us for free</button> */}
@@ -332,7 +332,7 @@ export default function Page({ params }) {
                         </Card>
                     ))} */}
 
-                    <Button className="w-full py-5 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors duration-300 font-3xl">
+                    <Button className="w-full py-5 bg-[#22C55E] text-white rounded-md hover:scale-105 hover:bg-[#22C55E] transition-all font-5xl">
                         Explore More Free Tools
                     </Button>
 
