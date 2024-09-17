@@ -237,6 +237,8 @@ export default function Home() {
   const [audience, setAudience] = useState('');
   const { toast } = useToast()
 
+  const [loaded, setLoaded] = useState(false)
+
   // useEffect(() => {
   //   const sliderList = document.querySelectorAll<HTMLElement>("#slider li")
   //   if (sliderList) {
@@ -252,6 +254,17 @@ export default function Home() {
   //   }
   // }, []);
 
+  // useEffect(() => {
+  //   if (loaded) {
+  //     toast({
+  //       variant: "destructive",
+  //       title: "Be patient, it may take a few seconds.",
+  //       description: "Information is being generated. Please wait.",
+  //     })
+  //     return;
+  //   }
+  // }, [loaded]);
+
   async function handleIdeaSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!idea || !audience) {
@@ -262,29 +275,36 @@ export default function Home() {
       })
       return;
     }
+    setLoaded(true)
     sessionStorage.setItem("idea", idea.toLowerCase());
     sessionStorage.setItem("audience", audience.toLowerCase());
     const array = new Uint32Array(3);
     self.crypto.getRandomValues(array);
     const number = (array[0] + array[1] + array[2]).toString();
-    const response = await fetch('/api/set-db1', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        id: number.toLowerCase(),
-        idea: idea.toLowerCase(),
-        audience: audience.toLowerCase()
-      }),
-    })
-    if (response.status == 200)
-      router.push(`/idea-valid/${number}`)
-    if (response.status == 201) {
-      response.json().then((data) => {
-        router.push(`/idea-valid/${data['Data']['rows'][0]['id']}`)
-        // console.log(data)
+    try {
+      const response = await fetch('/api/set-db1', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: number.toLowerCase(),
+          idea: idea.toLowerCase(),
+          audience: audience.toLowerCase()
+        }),
       })
+      if (response.status == 200)
+        router.push(`/idea-valid/${number}`)
+      if (response.status == 201) {
+        response.json().then((data) => {
+          router.push(`/idea-valid/${data['Data']['rows'][0]['id']}`)
+          // console.log(data)
+        })
+      }
+      setLoaded(false)
+    }
+    catch (e) {
+      setLoaded(false)
     }
   }
 
@@ -293,7 +313,7 @@ export default function Home() {
       arr.slice(i * size, i * size + size)
     );
   };
-  
+
   const reviewChunks = chunkArray(review, Math.ceil(review.length / 3));
 
   return (
@@ -329,7 +349,7 @@ export default function Home() {
               <div className="w-full mt-7">
                 {/* <Button type="submit" className="w-full py-7 text-xl font-black bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-lg transition duration-300 ease-in-out transform hover:scale-105">
                   Validate my idea for FREE <ArrowRight className="inline-block ml-2" size={24} /> </Button> */}
-                <Button type="submit" className="w-full py-7 text-xl bg-[#61BFAD] hover:bg-[#61BFAD] text-white rounded-lg transition duration-300 ease-in-out transform hover:scale-105">
+                <Button disabled={loaded} type="submit" className="w-full py-7 text-xl bg-[#61BFAD] hover:bg-[#61BFAD] text-white rounded-lg transition duration-300 ease-in-out transform hover:scale-105">
                   Validate my idea for FREE <ArrowRight className="inline-block ml-2" size={24} /> </Button>
                 <p className="mt-2 text-[#111827] italic font-mono">22,323 business ideas validated already</p>
               </div>

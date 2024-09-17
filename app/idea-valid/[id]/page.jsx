@@ -252,7 +252,7 @@ export default function Page({ params }) {
             ) : (
                 <div className="space-y-8">
                     <header className="flex flex-col md:flex-row justify-between items-center mb-6 bg-white p-6 rounded-lg shadow-md">
-                        <h1 className="text-3xl font-bold mb-4 md:mb-0">Your Report 🚀</h1>
+                        <h1 className="text-3xl font-bold mb-4 md:mb-0 text-black">Your Report 🚀</h1>
                         <div className="flex gap-4">
                             <a href='../'>
                                 <Button className="bg-[#61BFAD] transition-all hover:bg-[#61BFAD] hover:scale-105 text-white">
