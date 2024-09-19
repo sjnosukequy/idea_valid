@@ -2,12 +2,9 @@
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
-import { useState, useEffect } from "react";
-import styles from './styles.module.css'
-import CustomCard from "@/components/ui/CustomCard";
+import { useState } from "react";
 import { useRouter } from 'next/navigation'
 import { Rocket, Users, ArrowRight } from 'lucide-react';
-import type { ReactNode } from 'react';
 import { useToast } from "@/hooks/use-toast"
 
 
@@ -19,32 +16,6 @@ export default function Home() {
   const { toast } = useToast()
 
   const [loaded, setLoaded] = useState(false)
-
-  // useEffect(() => {
-  //   const sliderList = document.querySelectorAll<HTMLElement>("#slider li")
-  //   if (sliderList) {
-  //     const lineHeight = sliderList[0].offsetHeight + 30;
-  //     const slider = document.querySelector<HTMLElement>("#slider");
-  //     if (slider) {
-  //       slider.style.height = lineHeight * sliderList.length + "px";
-  //       const sliderRect = slider.getBoundingClientRect();
-  //       const totalHeight = sliderRect.height;
-  //       const time = (totalHeight) / 100; // 500px / sec
-  //       slider.style.animationDuration = time + "s";
-  //     }
-  //   }
-  // }, []);
-
-  // useEffect(() => {
-  //   if (loaded) {
-  //     toast({
-  //       variant: "destructive",
-  //       title: "Be patient, it may take a few seconds.",
-  //       description: "Information is being generated. Please wait.",
-  //     })
-  //     return;
-  //   }
-  // }, [loaded]);
 
   async function handleIdeaSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -92,12 +63,7 @@ export default function Home() {
   return (
     <div className="relative flex flex-col md:flex-row w-[100vw] h-[100vh] bg-[#F8FAFC]">
       <div className="relative flex flex-col flex-wrap justify-center content-center w-full p-5 gap-5">
-        {/* <BackgroundPattern /> */}
-        {/* <div className="absolute w-full h-full left-0 bg-current invert opacity-10 z-[1] pointer-events-none"></div> */}
         <div className="z-[2]">
-          {/* <h1 className="mb-3 text-5xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400">
-            100% FREE IDEA VALIDATOR
-          </h1> */}
           <h1 className="mb-3 text-5xl md:text-6xl font-mono text-[#111827]">
             100% FREE IDEA VALIDATOR
           </h1>
@@ -120,8 +86,6 @@ export default function Home() {
               </div>
 
               <div className="w-full mt-7">
-                {/* <Button type="submit" className="w-full py-7 text-xl font-black bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-lg transition duration-300 ease-in-out transform hover:scale-105">
-                  Validate my idea for FREE <ArrowRight className="inline-block ml-2" size={24} /> </Button> */}
                 <Button disabled={loaded} type="submit" className="w-full py-7 text-xl bg-[#61BFAD] hover:bg-[#61BFAD] text-white rounded-lg transition duration-300 ease-in-out transform hover:scale-105">
                   Validate my idea for FREE <ArrowRight className="inline-block ml-2" size={24} /> </Button>
                 <p className="mt-2 text-[#111827] italic font-mono">22,323 business ideas validated already</p>
